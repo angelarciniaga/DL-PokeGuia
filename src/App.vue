@@ -1,6 +1,6 @@
 <template>
-  <div id="app">
-    <img alt="logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/International_Pok%C3%A9mon_logo.svg/1200px-International_Pok%C3%A9mon_logo.svg.png">
+  <div>
+    <img alt="logo" src="../src/assets/20088202213.jpg">
     <PokeGuia />
   </div>
 </template>
@@ -18,5 +18,8 @@ export default {
 </script>
 
 <style>
+img {
+  width: 100%;
 
+}
 </style>

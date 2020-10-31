@@ -1,26 +1,33 @@
 <template>
   <div>
-    <h1>PokeGuía</h1>
-    <p>Ingresa nombre de tu pokemon favorito (si no te lo sabes coloca un numero)</p>
-    <form @submit.prevent="agregarPokemon">
-      <label for="tarea">Nombre: </label>
-      <input type="text" v-model="nombre">
-      <button type="submit">Buscar</button>
-    </form>
-    <div class="card" style="width: 18rem;">
-      <img :src="imagen" class="card-img-top" :alt="this.nombre">
-      <div class="card-body">
-        <h1 class="card-title">{{nombre}}</h1>
+    <h1 class="text-center">PokeGuía</h1>
+    <p class="text-center">Ingresa nombre de tu pokemon favorito (si no te lo sabes coloca un numero)</p>
+
+    <form class="container text-center" @submit.prevent="agregarPokemon(nombre)">
+      <div class="form-group">
+        <label for="tarea">Nombre: </label>
+        <input type="text" class="form-control" v-model="nombre">
       </div>
-      <ul class="list-group list-group-flush">
-        <h5>Movimientos</h5>
-        <li class="list-group-item" v-for="(item) in movimientos" :key="item">{{item.move.name}}</li>
-      </ul>
-      <ul class="list-group list-group-flush">
-        <h5>Habilidades</h5>
-        <li class="list-group-item" v-for="(item) in habilidades" :key="item">{{item.ability.name}}</li>
-      </ul>
-    </div>
+      <button type="submit" class="btn btn-info">Buscar</button>
+    </form>
+
+
+    <h1 class="text-center nombrePoke">{{nombre}}</h1>
+    <section class="row carta">
+      <div class="card text-center col-12" style="width: 18rem;">
+        <div class="card-header">
+          <img :src="imagen" class="imagePoke" :alt="this.nombre" >
+        </div>
+        <ul class="list-group list-group-flush">
+          <h5>Movimientos</h5>
+          <li class="list" v-for="(item, index) in movimientos" :key="index">{{item.move.name}}</li>
+        </ul>
+        <ul class="list-group list-group-flush">
+          <h5>Habilidades</h5>
+          <li class="list" v-for="(item, index) in habilidades" :key="index">{{item.ability.name}}</li>
+        </ul>
+      </div>
+    </section>
   </div>
 </template>
 
@@ -33,37 +40,55 @@ export default {
     return {
       nombre: '',
       imagen: '',
-      movimientos: '',
-      habilidades: ''
+      habilidades: [],
+      movimientos: [],
 
     }
   },
   methods: {
-    agregarPokemon() {
-      axios.get(`https://pokeapi.co/api/v2/pokemon/${this.nombre}`)
-      .then((result) => {
-        console.log(result.data)
-        this.nombre = result.data.name;
-        this.imagen = result.data.sprites.front_default;
-        this.movimientos = result.data.move;
-        this.habilidades = result.data.abilities;
-      })
-      this.nombre = '';
+    agregarPokemon(pokemon) {
+      if(pokemon)
+        axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemon}`)
+        .then(json => {
+          console.log(json.data)
+          this.nombre = json.data.name;
+          this.imagen = json.data.sprites.front_default;
+          this.movimientos = json.data.moves;
+          this.habilidades = json.data.abilities;
+        })
+        .catch(error => console.log(error))
     }
   },
   created() {
-    axios.get(`https://pokeapi.co/api/v2/pokemon/pikachu`)
-    .then((result) => {
-      this.nombre = result.data.name;
-      this.imagen = result.data.sprites.front_default;
-      this.movimientos = result.data.moves;
-      this.habilidades = result.data.abilities;
-    })
+    this.nombre = 'pikachu';
+    this.agregarPokemon('pikachu');
   },
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.form-control {
+  display: inline-block;
+  width: 25%;
+  margin-left: 10px;
+}
 
+.carta {
+  padding: 0 6.5rem 0 6.5rem;
+}
+
+.list {
+  list-style: none;
+}
+
+.imagePoke {
+  width: 120px;
+}
+
+.nombrePoke {
+  font-size: 60px;
+  text-transform: capitalize;
+  color: darkgoldenrod;
+}
 </style>
